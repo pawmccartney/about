@@ -39,6 +39,16 @@ app.put('/api/hotel/:hotelId', (req, res) => {
   })
 })
 
+app.delete('/api/hotel/:hotelId', (req, res) => {
+  databaseMethods.deleteHotel(req.params.hotelId, (err, result) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.status(200).send(result);
+    }
+  })
+})
+
 app.get('/:hotelName', (req, res) => {
   const fileName = 'index.html';
   const options = {

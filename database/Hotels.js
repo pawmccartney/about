@@ -117,9 +117,17 @@ const updateHotel = function(hotel_name, update, cb) {
   })
 }
 
+const deleteHotel = function(hotel_name, cb) {
+  return Hotels.deleteOne({ hotel_name }, (err, result) => {
+    if (err) cb(err);
+    cb(null, result);
+  })
+};
+
 module.exports = {
   Hotels,
   getHotel,
   createHotel,
-  updateHotel
+  updateHotel,
+  deleteHotel
 }
