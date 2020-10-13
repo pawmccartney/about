@@ -91,15 +91,16 @@ const hotelSchema = new mongoose.Schema({
 
 let Hotels = mongoose.model('Hotel', hotelSchema);
 
-let save = (hotel) => {
-  Hotels.create(hotel, (err) => {
-    if (err) {
-      return err;
-    } else {
-      return 'success';
-    }
-  });
+// Database Helpers
+
+const getHotel = function(hotel_name, cb) {
+  return Hotels.findOne({ hotel_name }, (err, result) => {
+    if (err) cb(err);
+    cb(null, result);
+  })
 }
 
-exports.Hotels = Hotels;
-exports.save = save;
+module.exports = {
+  Hotels,
+  getHotel
+}

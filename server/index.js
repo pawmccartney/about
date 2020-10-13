@@ -9,13 +9,13 @@ const port = 4001;
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.get('/api/hotel/:hotelId', (req, res) => {
-  databaseMethods.Hotels.findOne({hotel_name: req.params.hotelId})
-    .exec((err, result) => {
-      if (err) {
-        throw err;
-      }
-      res.send(result)
-    })
+  databaseMethods.getHotel(req.params.hotelId, (err, result) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.send(result);
+    }
+  })
 })
 
 app.get('/:hotelName', (req, res) => {
