@@ -1,11 +1,12 @@
 const express = require('express');
 const path = require('path');
-const bodyParser = require('body-parser');
 const databaseMethods = require('../database/Hotels');
 
 const app = express ();
 const port = 4001;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.get('/api/hotel/:hotelId', (req, res) => {
@@ -13,7 +14,17 @@ app.get('/api/hotel/:hotelId', (req, res) => {
     if (err) {
       res.sendStatus(400);
     } else {
-      res.send(result);
+      res.status(200).send(result);
+    }
+  })
+});
+
+app.post('/api/hotel', (req, res) => {
+  databaseMethods.createHotel(req.body, (err, result) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.status(201).send(result);
     }
   })
 })

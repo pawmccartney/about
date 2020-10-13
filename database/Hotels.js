@@ -92,6 +92,7 @@ const hotelSchema = new mongoose.Schema({
 let Hotels = mongoose.model('Hotel', hotelSchema);
 
 // Database Helpers
+let counter = 100;
 
 const getHotel = function(hotel_name, cb) {
   return Hotels.findOne({ hotel_name }, (err, result) => {
@@ -100,7 +101,17 @@ const getHotel = function(hotel_name, cb) {
   })
 }
 
+const createHotel = function(hotel, cb) {
+  hotel["hotel_name"] = 'hotel' + counter;
+  counter++;
+  return Hotels.create(hotel, (err, result) => {
+    if (err) cb(err);
+    cb(null, result);
+  })
+}
+
 module.exports = {
   Hotels,
-  getHotel
+  getHotel,
+  createHotel
 }
