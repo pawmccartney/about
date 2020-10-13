@@ -110,8 +110,16 @@ const createHotel = function(hotel, cb) {
   })
 }
 
+const updateHotel = function(hotel_name, update, cb) {
+  return Hotels.findOneAndUpdate({ hotel_name }, update, { new: true }, (err, result) => {
+    if (err) cb(err);
+    cb(null, result);
+  })
+}
+
 module.exports = {
   Hotels,
   getHotel,
-  createHotel
+  createHotel,
+  updateHotel
 }

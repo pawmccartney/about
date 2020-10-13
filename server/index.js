@@ -27,6 +27,16 @@ app.post('/api/hotel', (req, res) => {
       res.status(201).send(result);
     }
   })
+});
+
+app.put('/api/hotel/:hotelId', (req, res) => {
+  databaseMethods.updateHotel(req.params.hotelId, req.body, (err, result) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.status(200).send(result);
+    }
+  })
 })
 
 app.get('/:hotelName', (req, res) => {
