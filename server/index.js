@@ -65,6 +65,8 @@ app.get('/:hotelName', (req, res) => {
   })
 })
 
-app.listen(port, () => {
+var server = app.listen(port, () => {
   console.log(`Listening on port ${port}`)
 })
+
+module.exports = server;
