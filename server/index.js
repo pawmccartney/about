@@ -1,21 +1,52 @@
 const express = require('express');
 const path = require('path');
-const bodyParser = require('body-parser');
 const databaseMethods = require('../database/Hotels');
 
 const app = express ();
 const port = 4001;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.get('/api/hotel/:hotelId', (req, res) => {
-  databaseMethods.Hotels.findOne({hotel_name: req.params.hotelId})
-    .exec((err, result) => {
-      if (err) {
-        throw err;
-      }
-      res.send(result)
-    })
+  databaseMethods.getHotel(req.params.hotelId, (err, result) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.status(200).send(result);
+    }
+  })
+});
+
+app.post('/api/hotel', (req, res) => {
+  databaseMethods.createHotel(req.body, (err, result) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.status(201).send(result);
+    }
+  })
+});
+
+app.put('/api/hotel/:hotelId', (req, res) => {
+  databaseMethods.updateHotel(req.params.hotelId, req.body, (err, result) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.status(200).send(result);
+    }
+  })
+})
+
+app.delete('/api/hotel/:hotelId', (req, res) => {
+  databaseMethods.deleteHotel(req.params.hotelId, (err, result) => {
+    if (err) {
+      res.sendStatus(400);
+    } else {
+      res.status(200).send(result);
+    }
+  })
 })
 
 app.get('/:hotelName', (req, res) => {
@@ -34,6 +65,8 @@ app.get('/:hotelName', (req, res) => {
   })
 })
 
-app.listen(port, () => {
+var server = app.listen(port, () => {
   console.log(`Listening on port ${port}`)
 })
+
+module.exports = server;
