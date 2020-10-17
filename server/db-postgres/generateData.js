@@ -73,8 +73,7 @@ const imagesFile = fs.createWriteStream(path.join('.', 'server', 'db-postgres', 
 (async() => {
   for (let i = 1; i <= 10000000; i++) {
     for (var j = 0; j < 8; j++) {
-      // Change to my S3 bucket later
-      let url = `https://tripadcobaabout.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
+      let url = `https://tripadcoba-about.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
       if (faker.random.boolean() && !imagesFile.write(`${i}|${url}\n`)) {
         await new Promise(resolve => imagesFile.once('drain', resolve));
       }

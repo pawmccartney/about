@@ -65,10 +65,10 @@ const hotelsFile = fs.createWriteStream(path.join('.', 'server', 'db-cassandra',
     }
     row += JSON.stringify(amenitiesMap) + '|';
 
-    row += `{https://tripadcobaabout.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
+    row += `https://tripadcoba-about.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
     for (var j = 0; j < 7; j++) {
       row += ', ';
-      row += `https://tripadcobaabout.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
+      row += `https://tripadcoba-about.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
     }
     row += '}\n';
 
