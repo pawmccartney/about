@@ -10,8 +10,7 @@ let tables = [
 ];
 
 let columns = [
-  ['hotel_name',
-  'description',
+  ['description',
   'number_of_reviews',
   'rank',
   'overall_rating',
@@ -53,14 +52,13 @@ for (var i = 0; i < tables.length; i++) {
 }
 
 // Add indexes and foreign keys after insertion
-queries.push(db.query('ALTER TABLE hotels ADD COLUMN hotel_id SERIAL PRIMARY KEY'));
 queries.push(db.query(`ALTER TABLE images ADD CONSTRAINT hotel_link
-  FOREIGN KEY(hotel_id) REFERENCES hotels(hotel_id)`)
+  FOREIGN KEY(hotel_id) REFERENCES hotels(id)`)
 );
 
 for(var i = 1; i < 5; i++) {
   queries.push(db.query(`ALTER TABLE ${tables[i]} ADD CONSTRAINT hotel_link
-    FOREIGN KEY(hotel_id) REFERENCES hotels(hotel_id)`)
+    FOREIGN KEY(hotel_id) REFERENCES hotels(id)`)
   );
   queries.push(db.query(`ALTER TABLE ${tables[i]} ADD CONSTRAINT other_link
     FOREIGN KEY(${columns[i][1]}) REFERENCES ${tables[i].slice(6)}(id)`)

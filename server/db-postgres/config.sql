@@ -3,63 +3,63 @@ CREATE DATABASE about;
 \c about;
 
 CREATE TABLE hotels (
-  hotel_name varchar,
-  description varchar,
-  number_of_reviews int,
-  rank int,
+  description text,
+  number_of_reviews smallint,
+  rank smallint,
   overall_rating real,
   location_rating real,
   cleanliness_rating real,
   service_rating real,
   value_rating real,
-  hotel_class int,
-  hotel_style varchar,
-  hotel_website varchar
+  hotel_class smallint,
+  hotel_style text,
+  hotel_website text,
+  id SERIAL PRIMARY KEY
 );
 
 CREATE TABLE languages (
   id serial PRIMARY KEY,
-  language varchar
+  language text
 );
 
 CREATE TABLE hotel_languages (
   hotel_id int,
-  lang_id int
+  lang_id smallint
 );
 
 CREATE TABLE amenities (
   id serial PRIMARY KEY,
-  amenity varchar
+  amenity text
 );
 
 CREATE TABLE hotel_amenities (
   hotel_id int,
-  amenity_id int
+  amenity_id smallint
 );
 
 CREATE TABLE features (
   id serial PRIMARY KEY,
-  feature varchar
+  feature text
 );
 
 CREATE TABLE hotel_features (
   hotel_id int,
-  feature_id int
+  feature_id smallint
 );
 
 CREATE TABLE room_types (
   id serial PRIMARY KEY,
-  room_type varchar
+  room_type text
 );
 
 CREATE TABLE hotel_room_types (
   hotel_id int,
-  room_type_id int
+  room_type_id smallint
 );
 
 CREATE TABLE images (
   hotel_id int,
-  image_url varchar
+  image_url text
 );
 
 INSERT INTO languages(language)
