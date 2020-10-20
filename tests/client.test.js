@@ -1,4 +1,3 @@
-const http = require('http');
 const server = require('../server/index.js');
 const dbHelp = require('../database/Hotels.js');
 const axios = require('axios');
@@ -6,25 +5,6 @@ const axios = require('axios');
 afterAll(() => {
   server.close();
 })
-
-describe('GET API endpoint', () => {
-
-  test('should produce hotel info for specified hotel', (done) => {
-    http.get('http://localhost:4001/api/hotel/hotel2', (res) => {
-      var data = "";
-      res.on('data', (d) => {
-        data+= d;
-      })
-      res.on('end', () => {
-        data = JSON.parse(data);
-        expect(data.hotel_name).toBe('hotel2');
-        expect(res.statusCode).toBe(200);
-        done();
-      })
-    })
-    .end()
-  });
-});
 
 describe('POST API endpoint', () => {
   var body = {
@@ -87,6 +67,19 @@ describe('PUT API endpoint', () => {
   })
 });
 
+describe('GET API endpoint', () => {
+
+  test('should produce hotel info for specified hotel', () => {
+    return axios.get('http://localhost:4001/api/hotel/hotel100')
+      .then((res) => {
+        expect(res.status).toBe(200);
+        expect(res.data.hotel_class).toBe(4);
+        expect(res.data.description).toBe('test');
+      });
+  })
+
+});
+
 describe('DELETE API endpoint', () => {
 
   test('should delete database entry with matching hotel id', () => {
@@ -97,5 +90,4 @@ describe('DELETE API endpoint', () => {
         })
       })
   })
-
 });
