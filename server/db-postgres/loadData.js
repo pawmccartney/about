@@ -55,7 +55,6 @@ for (var i = 0; i < tables.length; i++) {
 queries.push(db.query(`ALTER TABLE images ADD CONSTRAINT hotel_link
   FOREIGN KEY(hotel_id) REFERENCES hotels(id)`)
 );
-
 for(var i = 1; i < 5; i++) {
   queries.push(db.query(`ALTER TABLE ${tables[i]} ADD CONSTRAINT hotel_link
     FOREIGN KEY(hotel_id) REFERENCES hotels(id)`)
@@ -63,6 +62,10 @@ for(var i = 1; i < 5; i++) {
   queries.push(db.query(`ALTER TABLE ${tables[i]} ADD CONSTRAINT other_link
     FOREIGN KEY(${columns[i][1]}) REFERENCES ${tables[i].slice(6)}(id)`)
   );
+}
+
+for (var i = 1; i < 6; i++) {
+  queries.push(db.query(`CREATE INDEX ON ${tables[i]}(hotel_id)`));
 }
 
 // Execute all queries
