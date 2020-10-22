@@ -19,7 +19,7 @@ const descriptionGenerator = () => {
 
   if (numOfP > 0) {
     for (var i = 1; i <= numOfP; i++) {
-      hotelDescription = `${hotelDescription} \n ${rest[faker.random.number({
+      hotelDescription = `${hotelDescription} ${rest[faker.random.number({
         min: 0,
         max: 19
       })]}`

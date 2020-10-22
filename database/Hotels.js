@@ -91,15 +91,43 @@ const hotelSchema = new mongoose.Schema({
 
 let Hotels = mongoose.model('Hotel', hotelSchema);
 
-let save = (hotel) => {
-  Hotels.create(hotel, (err) => {
-    if (err) {
-      return err;
-    } else {
-      return 'success';
-    }
-  });
+// Database Helpers
+let counter = 100;
+
+const getHotel = function(hotel_name, cb) {
+  return Hotels.findOne({ hotel_name }, (err, result) => {
+    if (err) cb(err);
+    cb(null, result);
+  })
 }
 
-exports.Hotels = Hotels;
-exports.save = save;
+const createHotel = function(hotel, cb) {
+  hotel["hotel_name"] = 'hotel' + counter;
+  counter++;
+  return Hotels.create(hotel, (err, result) => {
+    if (err) cb(err);
+    cb(null, result);
+  })
+}
+
+const updateHotel = function(hotel_name, update, cb) {
+  return Hotels.findOneAndUpdate({ hotel_name }, update, { new: true }, (err, result) => {
+    if (err) cb(err);
+    cb(null, result);
+  })
+}
+
+const deleteHotel = function(hotel_name, cb) {
+  return Hotels.deleteOne({ hotel_name }, (err, result) => {
+    if (err) cb(err);
+    cb(null, result);
+  })
+};
+
+module.exports = {
+  Hotels,
+  getHotel,
+  createHotel,
+  updateHotel,
+  deleteHotel
+}
