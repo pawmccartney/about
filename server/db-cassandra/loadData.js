@@ -3,7 +3,7 @@ const db = require('./index.js');
 // TODO: Load .csv files into database using loader
 
 // Testing Connection; remove later
-const query = `SELECT * FROM hotels`;
+const query = `SELECT * FROM hotels WHERE id=1`;
 db.execute(query)
   .then(result => {
     console.log(result);

@@ -1,3 +1,6 @@
 node_modules
 /dist/bundle.js
-server/db-postgres/seedData
+server/db-postgres/seedData/
+server/db-cassandra/seedData/
+dsbulk-1.7.0
+logs

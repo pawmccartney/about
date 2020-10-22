@@ -9,10 +9,13 @@ describe('Postgres Query Speeds', () => {
   let times = [];
 
   test('should return main hotel info', async () => {
+    await db.query(`SELECT id from hotels WHERE hotels.id = 1`);
+
     const t0 = performance.now();
-    let first = await db.query(`SELECT * FROM hotels WHERE hotels.id = 9999999;`);
+    let first = await db.query(`SELECT * FROM hotels WHERE hotels.id = 9999998;`);
     const t1 = performance.now();
     times.push((t1 - t0));
+    console.log(first.rows);
     expect(first.rows).toBeDefined();
   })
 
@@ -77,6 +80,7 @@ describe('Postgres Query Speeds', () => {
 
   test('should execute all queries in under 50ms altogether', () => {
     expect(times.reduce((acc, val) => acc + val)).toBeLessThan(50);
+    console.log('All query times:', times);
   })
 });
 

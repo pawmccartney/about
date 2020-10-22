@@ -3,39 +3,25 @@ const path = require('path');
 const faker = require('faker');
 const description = require('../../database/descriptionGenerator.js');
 
-const roomTypes = ['Ocean View', 'Suites', 'Family Rooms', 'Non-smoking Rooms'];
-const features = ['Air Conditioning', 'Room Service', 'Flatscreen TV', 'Safe', 'Wake-up Service',
-  'Housekeeping', 'Iron', 'Balcony', 'Private Beach', 'Additional Bathroom',
-  'Interconnected rooms available', 'Kitchenette', 'Laptop Safe', 'VIP Room Facilities', 'Refrigerator',
-  'Private Balcony', 'Sofa', 'DVD/CD Player', 'Microwave'
-];
-const amenities = ['Valet Parking', 'Pool', 'Free Breakfast', 'Beach', 'Babysitting', 'Free Internet',
-  'Fitness Center', 'Entertainment', 'Business Center', 'Spa', 'Diving', 'WiFi', 'Hot Tub', 'Kids Club',
-  'Fishing', 'Airport Transportation', 'Banquet Room', 'Couples Massage', 'Taxi Service', 'Steam Room',
-  'Salon', 'Gift Shop', 'ATM on site', 'Dry Cleaning', '24-Hour Front Desk', 'Karaoke', 'Aerobics',
-  'Swim-up Bar', 'Snack Bar', 'Meeting Rooms', 'Tennis Courts', 'Free Parking', 'Breakfast Buffet',
-  'Shuttle Bus Service', '24-Hour Security', 'Concierge', 'Currency Exchange', 'Non-smoking Hotel',
-  'Sun Loungers/Beach Chairs', 'Door Person', 'Shops'
-];
+let count = 10000000;
 
-const hotelsFile = fs.createWriteStream(path.join('.', 'server', 'db-cassandra', 'hotels.csv'));
+const hotelsFile = fs.createWriteStream(path.join('.', 'server', 'db-cassandra', 'seedData', 'hotels.csv'));
 (async() => {
-  let header = `hotel_name|description|number_of_reviews|rank|overall_rating|location_rating|cleanliness_rating|`;
-  header += `service_rating|value_rating|hotel_class|hotel_style|hotel_website|languages|room_types|room_features|`;
-  header += `property_amenities|images\n`;
+  let header = `id|description|number_of_reviews|rank|overall_rating|location_rating|cleanliness_rating|`;
+  header += `service_rating|value_rating|hotel_class|hotel_style|hotel_website|languages\n`;
   hotelsFile.write(header);
 
-  for (let i = 1; i <= 10000000; i++) {
+  for (let i = 1; i <= count; i++) {
     let row = '';
-    row += 'hotel' + i + '|';
+    row += i + '|';
     row += description() + '|';
     row += faker.random.number({ min: 1, max: 20000 }) + '|';
     row += faker.random.number({ min: 1, max: 100 }) + '|';
     for (var j = 0; j < 5; j++) {
-      row += faker.random.number({ min: 1.0, max: 5.0, precision: 0.1 }) + '|';
+      row += (faker.random.number({ min: 1.0, max: 5.0, precision: 0.1 })).toPrecision(2) + '|';
     }
     row += faker.random.number({ min: 1, max: 5 }) + '|';
-    row += faker.lorem.word() + ', ' + faker.lorem.word() + '|';
+    row += faker.commerce.productAdjective() + ', ' + faker.commerce.productAdjective() + '|';
     row += faker.internet.url() + '|';
 
     let languages = ['Spanish', 'French', 'German', 'Portuguese', 'Korean', 'Chinese', 'Italian'];
@@ -45,35 +31,86 @@ const hotelsFile = fs.createWriteStream(path.join('.', 'server', 'db-cassandra',
       row += ', ' + languages[idx];
       languages.splice(idx, 1);
     }
-    row += '|'
-
-    var typesMap = {};
-    for (var j = 0; j < roomTypes.length; j++) {
-      typesMap[roomTypes[j]] = faker.random.boolean();
-    }
-    row += JSON.stringify(typesMap) + '|';
-
-    var featuresMap = {};
-    for (var j = 0; j < features.length; j++) {
-      featuresMap[features[j]] = faker.random.boolean();
-    }
-    row += JSON.stringify(featuresMap) + '|';
-
-    var amenitiesMap = {};
-    for (var j = 0; j < amenities.length; j++) {
-      amenitiesMap[amenities[j]] = faker.random.boolean();
-    }
-    row += JSON.stringify(amenitiesMap) + '|';
-
-    row += `https://tripadcoba-about.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
-    for (var j = 0; j < 7; j++) {
-      row += ', ';
-      row += `https://tripadcoba-about.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
-    }
-    row += '}\n';
+    row += '\n';
 
     if (!hotelsFile.write(row)) {
       await new Promise(resolve => hotelsFile.once('drain', resolve));
+    }
+  }
+})();
+
+const featureFile = fs.createWriteStream(path.join('.', 'server', 'db-cassandra', 'seedData', 'hotelFeatures.csv'));
+(async() => {
+  let header = `id|air_conditioning|room_service|flatscreen_tv|safe|wake_up_service|housekeeping|iron|`;
+  header += `balcony|private_beach|additional_bathroom|interconnected_rooms_available|kitchenette|`;
+  header += `laptop_safe|vip_room_facilities|refrigerator|private_balcony|sofa|dvd_cd_player|microwave\n`;
+  featureFile.write(header);
+
+  for (let i = 1; i <= count; i++) {
+    let row = `${i}`;
+    for (var j = 0; j < 19; j++) {
+      row += `|${faker.random.boolean()}`;
+    }
+    row += '\n';
+
+    if (!featureFile.write(row)) {
+      await new Promise(resolve => featureFile.once('drain', resolve));
+    }
+  }
+})();
+
+const amenFile = fs.createWriteStream(path.join('.', 'server', 'db-cassandra', 'seedData', 'hotelAmenities.csv'));
+(async() => {
+  let header = `id|valet_parking|pool|free_breakfast|beach|babysitting|free_internet|fitness_center|`;
+  header += `entertainment|business_center|spa|diving|wifi|hot_tub|kids_club|fishing|airport_transportation|`;
+  header += `banquet_room|couples_massage|taxi_service|steam_room|salon|gift_shop|atm_on_site|dry_cleaning|`;
+  header += `front_desk|karaoke|aerobics|swim_up_bar|snack_bar|meeting_rooms|tennis_courts|free_parking|`;
+  header += `breakfast_buffet|shuttle_bus_service|security|concierge|currency_exchange|non_smoking_hotel|`;
+  header += `sun_loungers_beach_chairs|door_person|shops\n`;
+  amenFile.write(header);
+
+  for (let i = 1; i <= count; i++) {
+    let row = `${i}`;
+    for (var j = 0; j < 41; j++) {
+      row += `|${faker.random.boolean()}`;
+    }
+    row += '\n';
+
+    if (!amenFile.write(row)) {
+      await new Promise(resolve => amenFile.once('drain', resolve));
+    }
+  }
+})();
+
+const roomFile = fs.createWriteStream(path.join('.', 'server', 'db-cassandra', 'seedData', 'hotelRoomTypes.csv'));
+(async() => {
+  let header = `id|ocean_view|suites|family_rooms|non_smoking_rooms\n`;
+  roomFile.write(header);
+
+  for (let i = 1; i <= count; i++) {
+    let row = `${i}`;
+    for (var j = 0; j < 4; j++) {
+      row += `|${faker.random.boolean()}`;
+    }
+    row += '\n';
+
+    if (!roomFile.write(row)) {
+      await new Promise(resolve => roomFile.once('drain', resolve));
+    }
+  }
+})();
+
+const imagesFile = fs.createWriteStream(path.join('.', 'server', 'db-cassandra', 'seedData', 'hotelImages.csv'));
+(async() => {
+  let header = `id|image_id|image_url\n`;
+  imagesFile.write(header);
+
+  for (let i = 1; i <= count; i++) {
+    for (var j = 0; j < 8; j++) {
+      let url = `https://tripadcoba-about.s3.us-east-2.amazonaws.com/image${faker.random.number({min: 1, max: 100})}.jpg`;
+      if (!imagesFile.write(`${i}|${j}|${url}\n`)) {
+        await new Promise(resolve => imagesFile.once('drain', resolve));
+      }
     }
   }
 })();
