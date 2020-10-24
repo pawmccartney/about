@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
-const databaseMethods = require('../database/Hotels');
+// const databaseMethods = require('../database/Hotels');
 const pgHelp = require('./db-postgres/helpers.js');
+require('newrelic');
 
 const app = express ();
 const port = 4001;
@@ -9,16 +10,6 @@ const port = 4001;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../dist')));
-
-app.post('/api/test', (req, res) => {
-  let feats = req.body.room_features;
-  for (let feat in feats) {
-    if (feats[feat]) {
-      console.log(feat);
-    }
-  }
-  res.sendStatus(201);
-})
 
 app.get('/api/hotel/:hotelId', (req, res) => {
   pgHelp.getHotel(req.params.hotelId.slice(5))
@@ -41,18 +32,19 @@ app.post('/api/hotel', (req, res) => {
   })
 });
 
-app.put('/api/hotel/:hotelId', (req, res) => {
-  databaseMethods.updateHotel(req.params.hotelId, req.body, (err, result) => {
-    if (err) {
-      res.sendStatus(400);
-    } else {
-      res.status(200).send(result);
-    }
+app.delete('/api/hotel/:hotelId', (req, res) => {
+  pgHelp.deleteHotel(req.params.hotelId.slice(5))
+  .then((results) => {
+    res.status(200).send(results);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.sendStatus(400);
   })
 })
 
-app.delete('/api/hotel/:hotelId', (req, res) => {
-  pgHelp.deleteHotel(req.params.hotelId.slice(5))
+app.delete('/api/stress', (req, res) => {
+  pgHelp.stressTestCleanUp()
   .then((results) => {
     res.status(200).send(results);
   })

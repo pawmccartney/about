@@ -4,3 +4,5 @@ server/db-postgres/seedData/
 server/db-cassandra/seedData/
 dsbulk-1.7.0
 logs
+newrelic.js
+newrelic_agent.log

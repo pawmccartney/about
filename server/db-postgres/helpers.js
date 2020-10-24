@@ -195,7 +195,7 @@ const addHotel = (hotel) => {
     for (let image of images) {
       queries.push(
         db.query(`INSERT INTO images(hotel_id,image_url)
-          VALUES(${id}, '${image}')`)
+          VALUES(${id}, '${image}') RETURNING hotel_id`)
       );
     }
 
@@ -220,8 +220,24 @@ const deleteHotel = (id) => {
   })
 }
 
+const stressTestCleanUp = () => {
+  let queries = [];
+
+  queries.push(`DELETE FROM hotel_languages WHERE hotel_id>10000000`);
+  queries.push(`DELETE FROM hotel_amenities WHERE hotel_id>10000000`);
+  queries.push(`DELETE FROM hotel_features WHERE hotel_id>10000000`);
+  queries.push(`DELETE FROM hotel_room_types WHERE hotel_id>10000000`);
+  queries.push(`DELETE FROM images WHERE hotel_id>10000000`);
+  queries.push(`DELETE FROM hotels WHERE id>10000000`);
+
+  return Promise.all(queries.map(query => db.query(query))).catch((err) => {
+    console.error(err);
+  })
+}
+
 module.exports = {
   getHotel,
   addHotel,
-  deleteHotel
+  deleteHotel,
+  stressTestCleanUp
 }
