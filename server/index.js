@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
-const databaseMethods = require('../database/Hotels');
+// const databaseMethods = require('../database/Hotels');
+const pgHelp = require('./db-postgres/helpers.js');
+require('newrelic');
 
 const app = express ();
 const port = 4001;
@@ -10,42 +12,45 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.get('/api/hotel/:hotelId', (req, res) => {
-  databaseMethods.getHotel(req.params.hotelId, (err, result) => {
-    if (err) {
-      res.sendStatus(400);
-    } else {
-      res.status(200).send(result);
-    }
+  pgHelp.getHotel(req.params.hotelId.slice(5))
+  .then((results) => {
+    res.status(200).send(results);
+  })
+  .catch((err) => {
+    res.sendStatus(400);
   })
 });
 
 app.post('/api/hotel', (req, res) => {
-  databaseMethods.createHotel(req.body, (err, result) => {
-    if (err) {
-      res.sendStatus(400);
-    } else {
-      res.status(201).send(result);
-    }
+  pgHelp.addHotel(req.body)
+  .then((results) => {
+    res.status(201).send(results);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.sendStatus(400);
   })
 });
 
-app.put('/api/hotel/:hotelId', (req, res) => {
-  databaseMethods.updateHotel(req.params.hotelId, req.body, (err, result) => {
-    if (err) {
-      res.sendStatus(400);
-    } else {
-      res.status(200).send(result);
-    }
+app.delete('/api/hotel/:hotelId', (req, res) => {
+  pgHelp.deleteHotel(req.params.hotelId.slice(5))
+  .then((results) => {
+    res.status(200).send(results);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.sendStatus(400);
   })
 })
 
-app.delete('/api/hotel/:hotelId', (req, res) => {
-  databaseMethods.deleteHotel(req.params.hotelId, (err, result) => {
-    if (err) {
-      res.sendStatus(400);
-    } else {
-      res.status(200).send(result);
-    }
+app.delete('/api/stress', (req, res) => {
+  pgHelp.stressTestCleanUp()
+  .then((results) => {
+    res.status(200).send(results);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.sendStatus(400);
   })
 })
 
